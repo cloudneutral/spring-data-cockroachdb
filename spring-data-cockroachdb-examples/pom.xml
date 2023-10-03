@@ -1,0 +1,87 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.cockroachdb</groupId>
+        <artifactId>spring-data-cockroachdb-parent</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>spring-data-cockroachdb-examples</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Spring Data CockroachDB Examples</name>
+
+    <modules>
+        <module>jdbc-basics</module>
+        <module>jpa-basics</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <groups>unit-test</groups>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>it</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>unit-test | integration-test | functional-test</groups>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
+                            <argLine>
+                                -Dspring.profiles.active=local
+                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://localhost:26257/spring_data_test?sslmode=disable
+                            </argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>it-dev</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>unit-test | integration-test | functional-test</groups>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
+                            <argLine>
+                                -Dspring.profiles.active=dev
+                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://192.168.1.99:26257/spring_data_test?sslmode=disable
+                            </argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+

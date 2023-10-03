@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    active: 
+  application:
+    name: Spring Data CockroachDB Shell
+  output:
+    ansi:
+      enabled: always
+  shell:
+    history:
+      name: shell.history
+    command:
+      stacktrace:
+        enabled: true
+      version:
+        enabled: false
+      script:
+        enabled: false
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"

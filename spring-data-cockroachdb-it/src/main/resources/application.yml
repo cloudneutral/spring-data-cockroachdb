@@ -1,0 +1,25 @@
+spring:
+  profiles:
+    # jdbc      - Use JDBC for data access
+    # jpa       - Use JPA+Hibernate for data access
+    # app-retry - Enable client-side retry logic and disable JDBC driver level retries (default)
+    # dev       - Use dev host (internal)
+    # dedicated - Use CC cluster (req whitelisting)
+    active: jdbc,dedicated
+  datasource:
+    url: "jdbc:cockroachdb://localhost:26257/spring_data_test?sslmode=disable"
+    driver-class-name: io.cockroachdb.jdbc.CockroachDriver
+    username: root
+    password:
+  flyway:
+    enabled: true
+    clean-on-validation-error: true
+    baseline-on-migrate: true
+    locations: classpath:db/bank
+    clean-disabled: false
+  jpa:
+    open-in-view: false
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%t]){faint} %clr([%X{retry.connection}]){faint} %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:%5p} [%t] %logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"

@@ -1,0 +1,2 @@
+${AnsiColor.BRIGHT_YELLOW}Spring Data CockroachDB :: Integration Tests
+${AnsiColor.BRIGHT_GREEN}${application.formatted-version}${AnsiColor.DEFAULT}

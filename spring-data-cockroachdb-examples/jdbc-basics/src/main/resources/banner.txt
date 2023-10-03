@@ -1,0 +1,6 @@
+${AnsiColor.BRIGHT_YELLOW}
+ __               __            __                     __  __
+(_  _  _. _  _   |  \ _ |_ _   /   _  _|  _ _  _  _|_ |  \|__)
+__)|_)| || )(_)  |__/(_||_(_|  \__(_)(_|(| (_)(_|(_| )|__/|__)
+   |        _/                                                             |
+${AnsiColor.BRIGHT_GREEN}JDBC Basics Demo ${application.formatted-version}${AnsiColor.DEFAULT}
