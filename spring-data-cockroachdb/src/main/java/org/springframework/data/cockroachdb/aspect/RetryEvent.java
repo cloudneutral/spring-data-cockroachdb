@@ -1,6 +1,7 @@
 package org.springframework.data.cockroachdb.aspect;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.List;
 
 import org.springframework.context.ApplicationEvent;
@@ -9,21 +10,43 @@ import org.springframework.context.ApplicationEvent;
  * Application event optionally published (via callback) after a retry.
  */
 public class RetryEvent extends ApplicationEvent {
+    private final SQLException sqlException;
+
+    private final int numCalls;
+
+    private final String methodName;
+
+    private final Duration elapsedTime;
+
     private final String message;
 
-    private final List<SQLException> transientExceptions;
-
-    public RetryEvent(Object source, String message, List<SQLException> transientExceptions) {
+    public RetryEvent(Object source, SQLException sqlException, int numCalls, String methodName, Duration elapsedTime,
+                      String message) {
         super(source);
+        this.sqlException = sqlException;
+        this.numCalls = numCalls;
+        this.methodName = methodName;
+        this.elapsedTime = elapsedTime;
         this.message = message;
-        this.transientExceptions = transientExceptions;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public List<SQLException> getTransientExceptions() {
-        return transientExceptions;
+    public SQLException getSqlException() {
+        return sqlException;
+    }
+
+    public int getNumCalls() {
+        return numCalls;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public Duration getElapsedTime() {
+        return elapsedTime;
     }
 }

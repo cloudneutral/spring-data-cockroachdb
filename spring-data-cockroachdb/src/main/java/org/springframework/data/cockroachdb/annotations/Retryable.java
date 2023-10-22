@@ -27,4 +27,9 @@ public @interface Retryable {
      * @return max backoff time in millis
      */
     long maxBackoff() default 15000;
+
+    /**
+     * @return increase transaction priority on retry
+     */
+    boolean increasePriority() default false;
 }

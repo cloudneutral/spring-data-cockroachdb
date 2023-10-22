@@ -3,14 +3,14 @@ package org.springframework.data.cockroachdb.aspect;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.data.cockroachdb.annotations.SetVariable;
-import org.springframework.data.cockroachdb.annotations.TimeTravel;
-import org.springframework.data.cockroachdb.annotations.TransactionBoundary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.cockroachdb.annotations.SetVariable;
+import org.springframework.data.cockroachdb.annotations.TimeTravel;
+import org.springframework.data.cockroachdb.annotations.TransactionBoundary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
@@ -61,7 +61,12 @@ public class TransactionAttributesAspect {
             jdbcTemplate.update("SET application_name=?", transactionBoundary.applicationName());
         }
 
-        if (!TransactionBoundary.Priority.normal.equals(transactionBoundary.priority())) {
+        if (TransactionSynchronizationManager.hasResource("retryAspect.callCount")) {
+            int numCalls = (Integer) TransactionSynchronizationManager.getResource("retryAspect.callCount");
+            if (numCalls > 1) {
+                jdbcTemplate.execute("SET TRANSACTION PRIORITY " + TransactionBoundary.Priority.high.name());
+            }
+        } else if (!TransactionBoundary.Priority.normal.equals(transactionBoundary.priority())) {
             jdbcTemplate.execute("SET TRANSACTION PRIORITY " + transactionBoundary.priority().name());
         }
 

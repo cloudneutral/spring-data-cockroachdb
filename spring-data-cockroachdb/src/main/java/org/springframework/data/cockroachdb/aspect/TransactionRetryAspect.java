@@ -59,9 +59,10 @@ public class TransactionRetryAspect {
         return AnnotationUtils.findAnnotation(pjp.getSignature().getDeclaringType(), annotationType);
     }
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected Consumer<RetryEvent> retryEventConsumer = retryEvent -> {
+    private Consumer<RetryEvent> retryEventConsumer = retryEvent -> {
+        logger.info(retryEvent.getMessage());
     };
 
     public void setRetryEventConsumer(Consumer<RetryEvent> retryEventConsumer) {
@@ -81,9 +82,9 @@ public class TransactionRetryAspect {
         Assert.notNull(retryable, "No @Retryable annotation found!?");
 
         int numCalls = 0;
+        SQLException sqlException = null;
 
         final String methodName = pjp.getSignature().toShortString();
-        final List<SQLException> sqlExceptions = new ArrayList<>();
         final Instant callTime = Instant.now();
 
         do {
@@ -91,10 +92,12 @@ public class TransactionRetryAspect {
             try {
                 numCalls++;
 
+                TransactionSynchronizationManager.bindResource("retryAspect.callCount", numCalls);
+
                 Object rv = pjp.proceed(); // coin toss
 
                 if (numCalls > 1) {
-                    handleRecovery(sqlExceptions, numCalls, methodName, Duration.between(callTime, Instant.now()));
+                    handleRecovery(sqlException, numCalls, methodName, Duration.between(callTime, Instant.now()));
                 }
 
                 return rv;
@@ -102,13 +105,14 @@ public class TransactionRetryAspect {
                 throwable = ex.getUndeclaredThrowable();
             } catch (Exception ex) { // Catch r/w and commit time exceptions
                 throwable = ex;
+            } finally {
+                TransactionSynchronizationManager.unbindResource("retryAspect.callCount");
             }
 
             Throwable cause = NestedExceptionUtils.getMostSpecificCause(throwable);
             if (cause instanceof SQLException) {
-                SQLException sqlException = (SQLException) cause;
+                sqlException = (SQLException) cause;
                 if (isRetryable(sqlException)) {
-                    sqlExceptions.add(sqlException);
                     handleTransientException(sqlException, numCalls, methodName, retryable.maxBackoff());
                 } else {
                     handleNonTransientException(sqlException);
@@ -129,15 +133,15 @@ public class TransactionRetryAspect {
         return PSQLState.SERIALIZATION_FAILURE.getState().equals(sqlException.getSQLState());
     }
 
-    protected void handleRecovery(List<SQLException> sqlExceptions, int numCalls, String methodName,
+    protected void handleRecovery(SQLException sqlException,
+                                  int numCalls,
+                                  String methodName,
                                   Duration elapsedTime) {
         String message = "Recovered from transient SQL error after "
                 + numCalls + " calls to '"
                 + methodName + "' time spent: ("
                 + elapsedTime.toString() + ")";
-        logger.info(message);
-
-        retryEventConsumer.accept(new RetryEvent(this, message, sqlExceptions));
+        retryEventConsumer.accept(new RetryEvent(this, sqlException, numCalls, methodName, elapsedTime, message));
     }
 
     protected void handleTransientException(SQLException sqlException, int numCalls, String methodName,
