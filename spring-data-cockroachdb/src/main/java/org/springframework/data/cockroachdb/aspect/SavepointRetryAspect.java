@@ -159,7 +159,6 @@ public class SavepointRetryAspect {
                 Thread.sleep(backoffMillis.get());
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                e.printStackTrace();
             }
             backoffMillis.set(Math.min((long) (backoffMillis.get() * 1.5), 5000));
         }

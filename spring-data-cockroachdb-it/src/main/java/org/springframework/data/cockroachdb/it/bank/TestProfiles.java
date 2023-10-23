@@ -1,4 +1,4 @@
-package org.springframework.data.cockroachdb.it;
+package org.springframework.data.cockroachdb.it.bank;
 
 public abstract class TestProfiles {
     public static final String JPA = "jpa";

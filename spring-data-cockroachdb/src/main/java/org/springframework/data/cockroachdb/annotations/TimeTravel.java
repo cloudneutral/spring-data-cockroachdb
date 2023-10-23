@@ -5,8 +5,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.springframework.data.cockroachdb.aspect.TimeTravelMode;
-
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**

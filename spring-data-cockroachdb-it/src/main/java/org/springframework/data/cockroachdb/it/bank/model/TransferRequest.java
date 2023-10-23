@@ -64,7 +64,7 @@ public class TransferRequest {
 
     @Override
     public String toString() {
-        return "TransactionRequest{" +
+        return "TransferRequest" +
                 "id=" + idempotencyKey +
                 ", region='" + region + '\'' +
                 ", transactionType='" + transactionType + '\'' +

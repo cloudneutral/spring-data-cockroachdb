@@ -33,16 +33,4 @@ public class MetricsRetryListener extends LoggingRetryListener {
     public static int getNumRetriesFailed() {
         return numRetriesFailed.get();
     }
-
-//    public List<Duration> getExecutionTimes() {
-//        return new ArrayList<>(executionTimes);
-//    }
-//
-//    public Duration getTotalExecutionTime() {
-//        Duration total = Duration.ZERO;
-//        for (Duration duration : getExecutionTimes()) {
-//            total = total.plus(duration);
-//        }
-//        return total;
-//    }
 }

@@ -8,8 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.cockroachdb.annotations.TransactionPriority;
 import org.springframework.data.cockroachdb.annotations.SetVariable;
 import org.springframework.data.cockroachdb.annotations.TimeTravel;
+import org.springframework.data.cockroachdb.annotations.TimeTravelMode;
 import org.springframework.data.cockroachdb.annotations.TransactionBoundary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -34,7 +36,7 @@ public class TransactionAttributesAspect {
      */
     public static final int PRECEDENCE = AdvisorOrder.TRANSACTION_ATTRIBUTES_ADVISOR;
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -61,13 +63,18 @@ public class TransactionAttributesAspect {
             jdbcTemplate.update("SET application_name=?", transactionBoundary.applicationName());
         }
 
-        if (TransactionSynchronizationManager.hasResource("retryAspect.callCount")) {
-            int numCalls = (Integer) TransactionSynchronizationManager.getResource("retryAspect.callCount");
-            if (numCalls > 1) {
-                jdbcTemplate.execute("SET TRANSACTION PRIORITY " + TransactionBoundary.Priority.high.name());
+        if (!TransactionPriority.NORMAL.equals(transactionBoundary.retryPriority())) {
+            if (TransactionSynchronizationManager.hasResource(TransactionRetryAspect.RETRY_ASPECT_CALL_COUNT)) {
+                Integer numCalls = (Integer) TransactionSynchronizationManager
+                        .getResource(TransactionRetryAspect.RETRY_ASPECT_CALL_COUNT);
+                if (numCalls > 1) {
+                    jdbcTemplate.execute("SET TRANSACTION PRIORITY "
+                            + transactionBoundary.retryPriority().name());
+                }
             }
-        } else if (!TransactionBoundary.Priority.normal.equals(transactionBoundary.priority())) {
-            jdbcTemplate.execute("SET TRANSACTION PRIORITY " + transactionBoundary.priority().name());
+        } else if (!TransactionPriority.NORMAL.equals(transactionBoundary.priority())) {
+            jdbcTemplate.execute("SET TRANSACTION PRIORITY "
+                    + transactionBoundary.priority().name());
         }
 
         if (!"0s".equals(transactionBoundary.idleTimeout())) {

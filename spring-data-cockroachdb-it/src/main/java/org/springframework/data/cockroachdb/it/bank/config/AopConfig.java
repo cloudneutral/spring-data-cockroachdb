@@ -1,4 +1,4 @@
-package org.springframework.data.cockroachdb.it.bank;
+package org.springframework.data.cockroachdb.it.bank.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,8 +6,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.cockroachdb.aspect.TransactionAttributesAspect;
 import org.springframework.data.cockroachdb.aspect.TransactionRetryAspect;
-import org.springframework.data.cockroachdb.it.TestProfiles;
-import org.springframework.data.cockroachdb.it.bank.service.OutboxAspect;
+import org.springframework.data.cockroachdb.it.bank.TestProfiles;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
@@ -24,10 +23,4 @@ public class AopConfig {
     public TransactionAttributesAspect transactionAttributesAspect(JdbcTemplate jdbcTemplate) {
         return new TransactionAttributesAspect(jdbcTemplate);
     }
-
-    @Bean
-    public OutboxAspect outboxAspect() {
-        return new OutboxAspect();
-    }
-
 }

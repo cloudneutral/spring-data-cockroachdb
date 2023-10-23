@@ -53,37 +53,4 @@ public class BoundedThreadPool {
             return callable.call();
         });
     }
-
-    public <T> Future<T> submitAndWait(Callable<T> callable, long waitTimeMillis) {
-        if (threadPool.isShutdown() || threadPool.isTerminated()) {
-            throw new IllegalStateException("Thread pool shutdown");
-        }
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-
-        Future<T> f = threadPool.submit(() -> {
-            countDownLatch.countDown();
-            return callable.call();
-        });
-        if (waitTimeMillis > 0) {
-            try {
-                countDownLatch.await();
-                Thread.sleep(waitTimeMillis);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                e.printStackTrace();
-                throw new IllegalStateException(e);
-            }
-        }
-        return f;
-    }
-
-    public <T> T awaitFuture(Future<T> future) throws ExecutionException, TimeoutException {
-        try {
-            return future.get(20, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            e.printStackTrace();
-            throw new IllegalStateException(e);
-        }
-    }
 }

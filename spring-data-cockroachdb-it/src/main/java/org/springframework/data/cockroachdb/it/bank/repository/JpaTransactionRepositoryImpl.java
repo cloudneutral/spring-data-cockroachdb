@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.cockroachdb.it.TestProfiles;
+import org.springframework.data.cockroachdb.it.bank.TestProfiles;
 import org.springframework.data.cockroachdb.it.bank.model.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -7,7 +7,7 @@ import org.springframework.data.cockroachdb.annotations.NotTransactional;
 import org.springframework.data.cockroachdb.annotations.Retryable;
 import org.springframework.data.cockroachdb.annotations.TimeTravel;
 import org.springframework.data.cockroachdb.annotations.TransactionBoundary;
-import org.springframework.data.cockroachdb.aspect.TimeTravelMode;
+import org.springframework.data.cockroachdb.annotations.TimeTravelMode;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 

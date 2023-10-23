@@ -22,9 +22,6 @@ import com.zaxxer.hikari.HikariPoolMXBean;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("integration-test")
-//@ActiveProfiles({"jpa","dev"})
-//@ActiveProfiles({"jdbc","dev"})
 public abstract class AbstractBankIntegrationTest {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

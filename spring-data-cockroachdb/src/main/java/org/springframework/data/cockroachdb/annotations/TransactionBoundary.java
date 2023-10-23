@@ -8,7 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.data.cockroachdb.aspect.TimeTravelMode;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,15 +46,16 @@ public @interface TransactionBoundary {
     String idleTimeout() default "0s";
 
     /**
-     * Sets the transaction priority.
+     * Always sets the transaction priority, if not set to the default (normal).
      */
-    Priority priority() default Priority.normal;
+    TransactionPriority priority() default TransactionPriority.NORMAL;
 
-    enum Priority {
-        normal,
-        low,
-        high
-    }
+    /**
+     * Sets the transaction priority on a retry attempt, if not set to the default (normal).
+     * Overrides the {@link #priority()}() attribute.
+     * Only applies when using the @{@link TransactionBoundary} meta-annotation.
+     */
+    TransactionPriority retryPriority() default TransactionPriority.NORMAL;
 
     /**
      * Sets the 'application_name' session variable.

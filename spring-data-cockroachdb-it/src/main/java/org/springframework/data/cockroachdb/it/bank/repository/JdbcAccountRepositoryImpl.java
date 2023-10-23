@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.cockroachdb.annotations.NotTransactional;
-import org.springframework.data.cockroachdb.it.TestProfiles;
+import org.springframework.data.cockroachdb.it.bank.TestProfiles;
 import org.springframework.data.cockroachdb.it.bank.model.Account;
 import org.springframework.data.cockroachdb.it.bank.model.AccountSummary;
 import org.springframework.data.cockroachdb.it.bank.model.AccountType;

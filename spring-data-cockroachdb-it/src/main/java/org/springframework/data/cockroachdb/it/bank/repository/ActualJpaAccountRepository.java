@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import jakarta.persistence.Tuple;
 
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.cockroachdb.it.TestProfiles;
+import org.springframework.data.cockroachdb.it.bank.TestProfiles;
 import org.springframework.data.cockroachdb.it.bank.model.Account;
 import org.springframework.data.cockroachdb.it.bank.model.Money;
 import org.springframework.data.jpa.repository.JpaRepository;

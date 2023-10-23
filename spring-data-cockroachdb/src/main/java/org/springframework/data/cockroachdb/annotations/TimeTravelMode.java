@@ -1,4 +1,4 @@
-package org.springframework.data.cockroachdb.aspect;
+package org.springframework.data.cockroachdb.annotations;
 
 /**
  * Enumeration of time-travel query modes.

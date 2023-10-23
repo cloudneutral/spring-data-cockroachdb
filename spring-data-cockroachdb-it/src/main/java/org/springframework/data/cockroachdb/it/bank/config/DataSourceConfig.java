@@ -1,4 +1,4 @@
-package org.springframework.data.cockroachdb.it.bank;
+package org.springframework.data.cockroachdb.it.bank.config;
 
 import javax.sql.DataSource;
 
@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
-import org.springframework.data.cockroachdb.it.TestProfiles;
+import org.springframework.data.cockroachdb.it.bank.MetricsRetryListener;
+import org.springframework.data.cockroachdb.it.bank.TestProfiles;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 

@@ -1,6 +1,6 @@
 package org.springframework.data.cockroachdb.it.bank.repository;
 
-import org.springframework.data.cockroachdb.it.TestProfiles;
+import org.springframework.data.cockroachdb.it.bank.TestProfiles;
 import org.springframework.data.cockroachdb.it.bank.model.TransactionItem;
 
 import org.springframework.context.annotation.Profile;

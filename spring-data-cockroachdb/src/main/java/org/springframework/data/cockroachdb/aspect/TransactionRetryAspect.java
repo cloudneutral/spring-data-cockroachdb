@@ -5,11 +5,11 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.postgresql.util.PSQLState;
@@ -19,10 +19,9 @@ import org.springframework.core.NestedExceptionUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.data.cockroachdb.annotations.Retryable;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
-
-import org.springframework.data.cockroachdb.annotations.Retryable;
 
 /**
  * AOP aspect that automatically retries operations that throw transient SQL exceptions
@@ -55,6 +54,8 @@ public class TransactionRetryAspect {
      */
     public static final int PRECEDENCE = AdvisorOrder.TRANSACTION_RETRY_ADVISOR;
 
+    public static final String RETRY_ASPECT_CALL_COUNT = "TransactionRetryAspect.retryAttempt";
+
     static <A extends Annotation> A findAnnotation(ProceedingJoinPoint pjp, Class<A> annotationType) {
         return AnnotationUtils.findAnnotation(pjp.getSignature().getDeclaringType(), annotationType);
     }
@@ -69,7 +70,8 @@ public class TransactionRetryAspect {
         this.retryEventConsumer = retryEventConsumer;
     }
 
-    @Around(value = "org.springframework.data.cockroachdb.aspect.Pointcuts.anyRetryableOperation(retryable)", argNames = "pjp,retryable")
+    @Around(value = "org.springframework.data.cockroachdb.aspect.Pointcuts.anyRetryableOperation(retryable)",
+            argNames = "pjp,retryable")
     public Object doRetryableOperation(ProceedingJoinPoint pjp, Retryable retryable) throws Throwable {
         Assert.isTrue(!TransactionSynchronizationManager.isActualTransactionActive(),
                 "Expecting NO active transaction - check advice @Order and @EnableTransactionManagement order");
@@ -81,39 +83,40 @@ public class TransactionRetryAspect {
 
         Assert.notNull(retryable, "No @Retryable annotation found!?");
 
-        int numCalls = 0;
+        int methodCalls = 0;
         SQLException sqlException = null;
 
-        final String methodName = pjp.getSignature().toShortString();
         final Instant callTime = Instant.now();
 
         do {
             final Throwable throwable;
             try {
-                numCalls++;
+                methodCalls++;
 
-                TransactionSynchronizationManager.bindResource("retryAspect.callCount", numCalls);
+                TransactionSynchronizationManager.bindResource(RETRY_ASPECT_CALL_COUNT, methodCalls);
 
-                Object rv = pjp.proceed(); // coin toss
+                Object rv = pjp.proceed();
 
-                if (numCalls > 1) {
-                    handleRecovery(sqlException, numCalls, methodName, Duration.between(callTime, Instant.now()));
+                if (methodCalls > 1) {
+                    handleExceptionRecovery(sqlException, methodCalls, pjp.getSignature(),
+                            Duration.between(callTime, Instant.now()));
                 }
 
                 return rv;
             } catch (UndeclaredThrowableException ex) {
                 throwable = ex.getUndeclaredThrowable();
-            } catch (Exception ex) { // Catch r/w and commit time exceptions
+            } catch (Exception ex) {
                 throwable = ex;
             } finally {
-                TransactionSynchronizationManager.unbindResource("retryAspect.callCount");
+                TransactionSynchronizationManager.unbindResource(RETRY_ASPECT_CALL_COUNT);
             }
 
             Throwable cause = NestedExceptionUtils.getMostSpecificCause(throwable);
             if (cause instanceof SQLException) {
                 sqlException = (SQLException) cause;
                 if (isRetryable(sqlException)) {
-                    handleTransientException(sqlException, numCalls, methodName, retryable.maxBackoff());
+                    handleTransientException(sqlException, methodCalls, pjp.getSignature(),
+                            retryable.maxBackoff());
                 } else {
                     handleNonTransientException(sqlException);
                     throw throwable;
@@ -121,10 +124,11 @@ public class TransactionRetryAspect {
             } else {
                 throw throwable;
             }
-        } while (numCalls < retryable.retryAttempts());
+        } while (methodCalls - 1 < retryable.retryAttempts());
 
         throw new ConcurrencyFailureException(
-                "Too many serialization errors (" + numCalls + ") for method [" + pjp.getSignature().toShortString()
+                "Too many transient SQL errors (" + methodCalls + ") for method ["
+                        + pjp.getSignature().toShortString()
                         + "]. Giving up!");
     }
 
@@ -133,37 +137,47 @@ public class TransactionRetryAspect {
         return PSQLState.SERIALIZATION_FAILURE.getState().equals(sqlException.getSQLState());
     }
 
-    protected void handleRecovery(SQLException sqlException,
-                                  int numCalls,
-                                  String methodName,
-                                  Duration elapsedTime) {
-        String message = "Recovered from transient SQL error after "
-                + numCalls + " calls to '"
-                + methodName + "' time spent: ("
-                + elapsedTime.toString() + ")";
-        retryEventConsumer.accept(new RetryEvent(this, sqlException, numCalls, methodName, elapsedTime, message));
-    }
-
-    protected void handleTransientException(SQLException sqlException, int numCalls, String methodName,
-                                            long maxBackoff) {
-        try {
-            long backoffMillis = Math.min((long) (Math.pow(2, numCalls) + Math.random() * 1000), maxBackoff);
-            if (numCalls <= 1 && logger.isWarnEnabled()) {
-                logger.warn("Transient SQL error ({}) in call #{} to '{}' (backoff for {} ms before retry): {}",
-                        sqlException.getSQLState(), numCalls, methodName, backoffMillis, sqlException.getMessage());
-            }
-            Thread.sleep(backoffMillis);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
     protected void handleNonTransientException(SQLException sqlException) {
         sqlException.forEach(ex -> {
             SQLException nested = (SQLException) ex;
             logger.warn("Non-transient SQL error ({}): {}",
                     nested.getSQLState(), nested.getMessage());
         });
+    }
+
+    protected void handleTransientException(SQLException sqlException,
+                                            int methodCalls,
+                                            Signature signature,
+                                            long maxBackoff) {
+        try {
+            long backoffMillis = Math.min((long) (Math.pow(2, methodCalls) + Math.random() * 1000), maxBackoff);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Transient SQL error ({}) for method [{}] attempt ({}) backoff {} ms: {}",
+                        sqlException.getSQLState(),
+                        signature.toShortString(),
+                        methodCalls,
+                        backoffMillis,
+                        sqlException.getMessage());
+            }
+            TimeUnit.MILLISECONDS.sleep(backoffMillis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    protected void handleExceptionRecovery(SQLException sqlException,
+                                           int methodCalls,
+                                           Signature signature,
+                                           Duration elapsedTime) {
+        String message = "Recovered from transient SQL error ("
+                + sqlException.getSQLState()
+                + ") for method ["
+                + signature.toShortString()
+                + "] attempt (" + methodCalls
+                + ") time spent: "
+                + elapsedTime.toString();
+        retryEventConsumer.accept(new RetryEvent(this, sqlException, methodCalls,
+                signature.toShortString(), elapsedTime, message));
     }
 }
 

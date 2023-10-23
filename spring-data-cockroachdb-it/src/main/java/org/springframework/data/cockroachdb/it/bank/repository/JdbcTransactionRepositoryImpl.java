@@ -1,6 +1,5 @@
 package org.springframework.data.cockroachdb.it.bank.repository;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +14,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.data.cockroachdb.it.TestProfiles;
+import org.springframework.data.cockroachdb.it.bank.TestProfiles;
 import org.springframework.data.cockroachdb.it.bank.model.Transaction;
 import org.springframework.data.cockroachdb.it.bank.model.TransactionItem;
 import org.springframework.data.domain.Page;

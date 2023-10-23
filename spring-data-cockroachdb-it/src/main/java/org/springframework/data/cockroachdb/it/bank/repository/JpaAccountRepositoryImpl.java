@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -17,7 +16,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 
 import org.springframework.data.cockroachdb.annotations.TransactionBoundary;
-import org.springframework.data.cockroachdb.it.TestProfiles;
+import org.springframework.data.cockroachdb.it.bank.TestProfiles;
 import org.springframework.data.cockroachdb.it.bank.model.Account;
 import org.springframework.data.cockroachdb.it.bank.model.AccountSummary;
 import org.springframework.data.cockroachdb.annotations.NotTransactional;

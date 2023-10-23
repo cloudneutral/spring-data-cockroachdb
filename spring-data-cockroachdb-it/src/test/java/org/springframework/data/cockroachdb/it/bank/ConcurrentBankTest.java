@@ -12,6 +12,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.cockroachdb.it.bank.model.Account;
 import org.springframework.data.cockroachdb.it.bank.model.Money;
@@ -23,6 +24,9 @@ import org.springframework.data.cockroachdb.it.util.TextUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+@Tag("integration-test")
+//@ActiveProfiles({"jpa","dev"})
+//@ActiveProfiles({"jdbc","dev","app-retry"})
 public class ConcurrentBankTest extends AbstractBankIntegrationTest {
     private final BoundedThreadPool boundedThreadPool = new BoundedThreadPool(
             Runtime.getRuntime().availableProcessors() * 30); // Mostly I/O waits, so set aggressive thread count
