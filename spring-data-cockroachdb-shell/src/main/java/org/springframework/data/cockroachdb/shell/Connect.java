@@ -78,7 +78,6 @@ public class Connect extends CockroachShellCommand {
                     .withImplicitSelectForUpdate(implicitSFU)
                     .withRetryTransientErrors(internalRetry)
                     .withDataSourceProperties(configurer)
-
                     .withTraceMethods(traceMethods)
                     .withTraceSQL(traceSQL)
                     .withHikariConfigurer(config -> {

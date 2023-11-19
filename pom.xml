@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.springframework.data.build</groupId>
         <artifactId>spring-data-parent</artifactId>
-        <version>3.0.3</version>
+        <version>3.1.5</version>
     </parent>
 
     <groupId>io.cockroachdb</groupId>
     <artifactId>spring-data-cockroachdb-parent</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Spring Data CockroachDB Parent</name>
@@ -28,9 +28,9 @@
     </modules>
 
     <scm>
-        <connection>scm:git:git@github.com:kai-niemi/spring-data-cockroachdb.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:kai-niemi/spring-data-cockroachdb.git</developerConnection>
-        <url>https://github.com/kai-niemi/spring-data-cockroachdb.git</url>
+        <connection>scm:git:git@github.com:cloudneutral/spring-data-cockroachdb.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:cloudneutral/spring-data-cockroachdb.git</developerConnection>
+        <url>https://github.com/cloudneutral/spring-data-cockroachdb.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -52,14 +52,14 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/kai-niemi/spring-data-cockroachdb/issues</url>
+        <url>https://github.com/cloudneutral/spring-data-cockroachdb/issues</url>
     </issueManagement>
 
     <repositories>
         <repository>
             <id>github</id>
             <name>Cockroach Labs Maven Packages</name>
-            <url>https://maven.pkg.github.com/kai-niemi/cockroachdb-jdbc</url>
+            <url>https://maven.pkg.github.com/cloudneutral/cockroachdb-jdbc</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -72,11 +72,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+        <cockroachdb-jdbc.version>1.1.1-SNAPSHOT</cockroachdb-jdbc.version>
         <spring.boot.version>3.1.5</spring.boot.version>
         <spring.data.version>3.1.5</spring.data.version>
         <spring.shell.version>3.1.4</spring.shell.version>
-
-        <cockroachdb-jdbc.version>1.0.1</cockroachdb-jdbc.version>
         <datasource-proxy.version>1.9</datasource-proxy.version>
         <hikari.version>5.0.1</hikari.version>
         <slf4j.version>1.7.36</slf4j.version>
@@ -89,7 +88,7 @@
         <repository>
             <id>github</id>
             <name>GitHub CockroachDB Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/kai-niemi/spring-data-cockroachdb</url>
+            <url>https://maven.pkg.github.com/cloudneutral/spring-data-cockroachdb</url>
         </repository>
     </distributionManagement>
 

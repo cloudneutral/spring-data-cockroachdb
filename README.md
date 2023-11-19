@@ -1,4 +1,4 @@
-[![Java CI with Maven](https://github.com/kai-niemi/spring-data-cockroachdb/actions/workflows/maven.yml/badge.svg)](https://github.com/kai-niemi/spring-data-cockroachdb/actions/workflows/maven.yml)
+[![Java CI with Maven](https://github.com/cloudneutral/spring-data-cockroachdb/actions/workflows/maven.yml/badge.svg)](https://github.com/cloudneutral/spring-data-cockroachdb/actions/workflows/maven.yml)
 
 # Spring Data CockroachDB
 
@@ -25,7 +25,7 @@ See [MIT](LICENSE.txt) license for terms and conditions.
 
 ## Features
 
-* Bundles the [CockroachDB JDBC driver](https://github.com/kai-niemi/cockroachdb-jdbc)
+* Bundles the [CockroachDB JDBC driver](https://github.com/cloudneutral/cockroachdb-jdbc)
 * Meta-annotations for declaring:
   * Retryable transactions
   * Read-only transactions 
@@ -156,7 +156,7 @@ Then add the Maven repository to your `pom.xml` file (alternatively in Maven's [
 <repository>
     <id>cockroachdb-jdbc</id>
     <name>Cockroach Labs Maven Packages</name>
-    <url>https://maven.pkg.github.com/kai-niemi/cockroachdb-jdbc</url>
+    <url>https://maven.pkg.github.com/cloudneutral/cockroachdb-jdbc</url>
     <snapshots>
         <enabled>true</enabled>
     </snapshots>
@@ -190,12 +190,12 @@ the building section at the end of this page.
 
 ### Reporting Issues
                                                              
-Spring Data CockroachDB uses [GitHub](https://github.com/kai-niemi/spring-data-cockroachdb/issues) as issue tracking system 
+Spring Data CockroachDB uses [GitHub](https://github.com/cloudneutral/spring-data-cockroachdb/issues) as issue tracking system 
 to record bugs and feature requests. If you want to raise an issue, please follow the recommendations below:
 
-* Before you log a bug, please search the [issue tracker](https://github.com/kai-niemi/spring-data-cockroachdb/issues) 
+* Before you log a bug, please search the [issue tracker](https://github.com/cloudneutral/spring-data-cockroachdb/issues) 
 to see if someone has already reported the problem.
-* If the issue doesn’t exist already, [create a new issue](https://github.com/kai-niemi/spring-data-cockroachdb/issues). 
+* If the issue doesn’t exist already, [create a new issue](https://github.com/cloudneutral/spring-data-cockroachdb/issues). 
 * Please provide as much information as possible with the issue report, we like to know the version of Spring Data 
 that you are using and JVM version, complete stack traces and any relevant configuration information.
 * If you need to paste code, or include a stack trace format it as code using triple backtick.
@@ -255,13 +255,13 @@ brew install openjdk@17
 
 ### Dependencies
    
-This project depends on the [CockroachDB JDBC driver](https://github.com/kai-niemi/cockroachdb-jdbc)
-which artifacts are available in [GitHub Packages](https://github.com/orgs/kai-niemi/packages?repo_name=cockroachdb-jdbc).
+This project depends on the [CockroachDB JDBC driver](https://github.com/cloudneutral/cockroachdb-jdbc)
+which artifacts are available in [GitHub Packages](https://github.com/orgs/cloudneutral/packages?repo_name=cockroachdb-jdbc).
 
 ### Clone the project
 
 ```bash
-git clone git@github.com:kai-niemi/spring-data-cockroachdb.git
+git clone git@github.com:cloudneutral/spring-data-cockroachdb.git
 cd spring-data-cockroachdb
 ```
 
