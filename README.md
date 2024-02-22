@@ -293,12 +293,6 @@ retry mechanism and other JDBC driver features.
 
 First start a [local](https://www.cockroachlabs.com/docs/stable/start-a-local-cluster.html) CockroachDB node or cluster.
 
-Create the database:
-
-```bash
-cockroach sql --insecure --host=localhost -e "CREATE database spring_data_test"
-```
-
 Then activate the integration test Maven profile:
 
 ```bash

@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.springframework.data.build</groupId>
         <artifactId>spring-data-parent</artifactId>
-        <version>3.1.5</version>
+        <version>3.2.2</version>
     </parent>
 
     <groupId>io.cockroachdb</groupId>
     <artifactId>spring-data-cockroachdb-parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Spring Data CockroachDB Parent</name>
@@ -72,16 +72,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <cockroachdb-jdbc.version>1.1.1-SNAPSHOT</cockroachdb-jdbc.version>
-        <spring.boot.version>3.1.5</spring.boot.version>
-        <spring.data.version>3.1.5</spring.data.version>
-        <spring.shell.version>3.1.4</spring.shell.version>
+        <cockroachdb-jdbc.version>1.2.0</cockroachdb-jdbc.version>
+        <spring.boot.version>3.2.2</spring.boot.version>
+        <spring.data.version>3.2.2</spring.data.version>
+        <spring.shell.version>3.2.1</spring.shell.version>
         <datasource-proxy.version>1.9</datasource-proxy.version>
-        <hikari.version>5.0.1</hikari.version>
-        <slf4j.version>1.7.36</slf4j.version>
-        <logback.version>1.4.8</logback.version>
-        <mockito.version>4.8.1</mockito.version>
-        <junit-jupiter.version>5.10.0</junit-jupiter.version>
+        <hikari.version>5.1.0</hikari.version>
+        <slf4j.version>2.0.11</slf4j.version>
+        <logback.version>1.4.14</logback.version>
+        <mockito.version>5.10.0</mockito.version>
+        <junit-jupiter.version>5.10.1</junit-jupiter.version>
     </properties>
 
     <distributionManagement>
@@ -113,7 +113,7 @@
             <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjweaver</artifactId>
-                <version>1.9.20</version>
+                <version>1.9.21.1</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -185,7 +185,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.2.5</version>
                     <executions>
                         <execution>
                             <id>test</id>
@@ -198,7 +198,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.11.0</version>
+                    <version>3.12.1</version>
                     <configuration>
                         <source>17</source>
                         <target>17</target>
@@ -224,7 +224,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.3.2</version>
                     <configuration>
                         <failOnError>false</failOnError>
                         <filesets>
@@ -242,7 +242,7 @@
                 <plugin>
                     <groupId>com.amashchenko.maven.plugin</groupId>
                     <artifactId>gitflow-maven-plugin</artifactId>
-                    <version>1.19.0</version>
+                    <version>1.21.0</version>
                     <configuration>
                         <fetchRemote>false</fetchRemote>
                         <verbose>true</verbose>
@@ -302,7 +302,7 @@
                             </includes>
                             <argLine>
                                 -Dspring.profiles.active=jdbc
-                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://localhost:26257/spring_data_test?sslmode=disable
+                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://localhost:26257/defaultdb?sslmode=disable
                             </argLine>
                         </configuration>
                     </plugin>
@@ -323,7 +323,7 @@
                             </includes>
                             <argLine>
                                 -Dspring.profiles.active=jdbc
-                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://192.168.1.99:26257/spring_data_test?sslmode=disable
+                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://192.168.1.99:26257/defaultdb?sslmode=disable
                             </argLine>
                         </configuration>
                     </plugin>

@@ -54,7 +54,7 @@
                             </includes>
                             <argLine>
                                 -Dspring.profiles.active=local
-                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://localhost:26257/spring_data_test?sslmode=disable
+                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://localhost:26257/defaultdb?sslmode=disable
                             </argLine>
                         </configuration>
                     </plugin>
@@ -75,7 +75,7 @@
                             </includes>
                             <argLine>
                                 -Dspring.profiles.active=dev
-                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://192.168.1.99:26257/spring_data_test?sslmode=disable
+                                -Dtest.datasources.crdb.url=jdbc:cockroachdb://192.168.1.99:26257/defaultdb?sslmode=disable
                             </argLine>
                         </configuration>
                     </plugin>
